@@ -1,33 +1,42 @@
 {
   "project_info": {
-    "project_number": "812366800335",
-    "project_id": "chitforchat-d1ee5",
-    "storage_bucket": "chitforchat-d1ee5.appspot.com"
+    "project_number": "364274933056",
+    "firebase_url": "https://letschat-30e4c-default-rtdb.firebaseio.com",
+    "project_id": "letschat-30e4c",
+    "storage_bucket": "letschat-30e4c.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:812366800335:android:b8bfccd34f56b69339deba",
+        "mobilesdk_app_id": "1:364274933056:android:ab3a3be96421faca5feea5",
         "android_client_info": {
-          "package_name": "com.rohit.chitForChat"
+          "package_name": "com.harjeet.letschat"
         }
       },
       "oauth_client": [
         {
-          "client_id": "812366800335-75jv9e2k1b8bspcl5nnjm86iujv920am.apps.googleusercontent.com",
+          "client_id": "364274933056-iqrs4miekm6tg26o1lnot5uj6a36gvck.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.harjeet.letschat",
+            "certificate_hash": "2a5813ea763c306f51a8b3d8def1d15faf8727e0"
+          }
+        },
+        {
+          "client_id": "364274933056-crfab637bmjvdqc3ii0ai8bmjn9sf2hf.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAlpu6dTKDbAOhWmWL3InfYKedyG9bQ25w"
+          "current_key": "AIzaSyD3oG4u1V-A6mNgrlWNePlSw7AmbYN-m00"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "812366800335-75jv9e2k1b8bspcl5nnjm86iujv920am.apps.googleusercontent.com",
+              "client_id": "364274933056-crfab637bmjvdqc3ii0ai8bmjn9sf2hf.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

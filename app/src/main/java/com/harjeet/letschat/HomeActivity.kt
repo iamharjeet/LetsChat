@@ -1,4 +1,4 @@
-package com.harjeet.chitForChat
+package com.harjeet.letschat
 
 import android.Manifest
 import android.content.pm.PackageManager
@@ -8,11 +8,15 @@ import android.os.Looper
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
 import com.google.firebase.database.FirebaseDatabase
-import com.harjeet.chitForChat.Models.Users
-import com.harjeet.chitForChat.adapters.HomeTabApapter
-import com.harjeet.chitForChat.databinding.ActivityHomeBinding
+import com.harjeet.letschat.Models.Users
+import com.harjeet.letschat.adapters.HomeTabApapter
+import harjeet.chitForChat.databinding.ActivityHomeBinding
 import java.util.*
-
+import harjeet.chitForChat.R
+/* Showing all three screens (chats,nearby and settings ) on activity
+* Updating location of user
+* Handling online or offline status of user
+* */
 class HomeActivity : AppCompatActivity() {
     private val LOCATION_PERMISSION_REQUEST_CODE: Int = 1
     var fusedLocationProviderClient: FusedLocationProviderClient? = null
@@ -57,6 +61,7 @@ class HomeActivity : AppCompatActivity() {
     }
 
 
+    //getting current location of user
     private fun setUpLocationListener() {
         // for getting the current location update after every 2 seconds with high accuracy
         locationRequest = LocationRequest().setInterval(10000).setFastestInterval(10000)

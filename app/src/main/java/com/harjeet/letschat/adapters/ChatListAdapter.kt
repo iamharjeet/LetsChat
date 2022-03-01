@@ -1,27 +1,27 @@
-package com.harjeet.chitForChat.adapters
+package com.harjeet.letschat.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.Typeface
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.harjeet.chitForChat.ChatLiveActivity
-import com.harjeet.chitForChat.Models.ChatFriendsModel
-import com.harjeet.chitForChat.MyConstants
-import com.harjeet.chitForChat.MyUtils
-import com.harjeet.chitForChat.R
+import com.harjeet.letschat.*
+import com.harjeet.letschat.Models.ChatFriendsModel
+import com.harjeet.letschat.MyUtils.showProfileDialog
 import de.hdodenhof.circleimageview.CircleImageView
+import harjeet.chitForChat.R
 
+
+/*
+* Handling users list
+* */
 class ChatListAdapter(var context: Context, var chatFriendList: ArrayList<ChatFriendsModel>) :
     RecyclerView.Adapter<ChatListAdapter.viewHolder>() {
 
@@ -31,11 +31,30 @@ class ChatListAdapter(var context: Context, var chatFriendList: ArrayList<ChatFr
         return viewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: ChatListAdapter.viewHolder, @SuppressLint("RecyclerView") position: Int) {
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun onBindViewHolder(
+        holder: ChatListAdapter.viewHolder,
+        @SuppressLint("RecyclerView") position: Int
+    ) {
+        var roomId = ""
+        var senderId = MyUtils.getStringValue(context, MyConstants.USER_PHONE)
+        var receiverId = chatFriendList.get(position).userId.toString()
+        if (senderId < receiverId) {
+            roomId = senderId + receiverId
+        } else {
+            roomId = receiverId + senderId
+        }
+
         holder.txtName.setText(chatFriendList.get(position).name)
-            holder.txtLastMessage.setText(chatFriendList.get(position).origonalMessage)
-            holder.txtTime.setText("2:00 pm")
-            Glide.with(context).load(chatFriendList.get(position).image).placeholder(R.drawable.user).into(holder.imgUser)
+        holder.txtLastMessage.setText(
+            CodeAndDecode.decrypt(
+                chatFriendList.get(position).origonalMessage,
+                roomId
+            )
+        )
+        holder.txtTime.setText("")
+        Glide.with(context).load(chatFriendList.get(position).image).placeholder(R.drawable.user)
+            .into(holder.imgUser)
 
         holder.itemView.setOnClickListener {
             context.startActivity(
@@ -47,6 +66,9 @@ class ChatListAdapter(var context: Context, var chatFriendList: ArrayList<ChatFr
                     .putExtra(MyConstants.OTHER_USER_IMAGE, chatFriendList.get(position).image)
 
             )
+        }
+        holder.imgUser.setOnClickListener {
+            showProfileDialog(context, chatFriendList.get(position).image.toString())
         }
 
     }

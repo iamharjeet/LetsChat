@@ -1,4 +1,4 @@
-package com.harjeet.chitForChat
+package com.harjeet.letschat
 
 import android.Manifest
 import android.app.AlertDialog
@@ -8,14 +8,8 @@ import android.content.Context.MODE_PRIVATE
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.graphics.Color
-import android.graphics.Color.TRANSPARENT
-import android.graphics.PixelFormat.TRANSPARENT
 import android.location.LocationManager
 import android.provider.Settings
-import android.widget.GridLayout
-import android.widget.GridView
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -23,16 +17,23 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import de.hdodenhof.circleimageview.CircleImageView
+import harjeet.chitForChat.R
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+/*
+*  Make common methods that can be call from anywhere from application
+*/
 object MyUtils {
     var dialog: Dialog? = null;
+
+    // showing a message toast
     fun showToast(context: Context, message: String) {
         Toast.makeText(context, message, Toast.LENGTH_LONG).show()
     }
 
+
+    // saving text data in local database
     fun saveStringValue(context: Context, key: String, value: String) {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences("MySharedPrefChitForChat", MODE_PRIVATE)
@@ -41,11 +42,16 @@ object MyUtils {
         myEdit.commit()
     }
 
+
+    //getting saved text from local database
     fun getStringValue(context: Context, key: String): String {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences("MySharedPrefChitForChat", MODE_PRIVATE)
         return sharedPreferences.getString(key, "").toString()
     }
+
+
+    // saving boolean value in local database
 
     fun saveBooleanValue(context: Context, key: String, value: Boolean) {
         val sharedPreferences: SharedPreferences =
@@ -55,12 +61,15 @@ object MyUtils {
         myEdit.commit()
     }
 
+
+    // getting boolean from local database
     fun getBooleanValue(context: Context, key: String): Boolean {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences("MySharedPrefChitForChat", MODE_PRIVATE)
         return sharedPreferences.getBoolean(key, false)
     }
 
+    // clear all save data of local database
     fun clearAllData(context: Context) {
         val sharedPreferences: SharedPreferences =
             context.getSharedPreferences("MySharedPrefChitForChat", MODE_PRIVATE)
@@ -69,6 +78,8 @@ object MyUtils {
         myEdit.commit()
     }
 
+
+    // showing progress bar while hitting api's
     fun showProgress(context: Context) {
         dialog = Dialog(context);
         dialog!!.setContentView(R.layout.dialog_progress)
@@ -76,11 +87,14 @@ object MyUtils {
         dialog!!.show()
     }
 
+
+    // stop showing progress
     fun stopProgress(context: Context) {
         dialog!!.cancel()
     }
 
 
+    // request for permissions
     fun requestAccessFineLocationPermission(activity: AppCompatActivity, requestId: Int) {
         ActivityCompat.requestPermissions(
             activity,
@@ -131,6 +145,8 @@ object MyUtils {
             .show()
     }
 
+
+    // Convert a timestamp into time
     fun convertIntoTime(timeStamp: String): String {
         var Timestamp: Long = timeStamp.toLong()
         var timeD: Date = Date(Timestamp)
@@ -138,7 +154,7 @@ object MyUtils {
         return sdf.format(timeD)
     }
 
-
+    // convert a timestamp into date
     fun convertIntoDate(timeStamp: String): String {
         var Timestamp: Long = timeStamp.toLong()
         var timeD: Date = Date(Timestamp)
@@ -147,5 +163,21 @@ object MyUtils {
     }
 
 
+    // showing profile pic dialog
+    fun showProfileDialog(context: Context, imageUrl: String) {
+        var dialog = Dialog(context)
+        dialog.setContentView(R.layout.dialog_show_profile)
+        var imgUser = dialog.findViewById<CircleImageView>(R.id.imgUser)
 
+        dialog.getWindow()!!.setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.window!!.setLayout(
+            GridLayoutManager.LayoutParams.MATCH_PARENT,
+            GridLayoutManager.LayoutParams.WRAP_CONTENT
+        )
+        if (!imageUrl.equals("")) {
+            Glide.with(context).load(imageUrl).placeholder(R.drawable.user).into(imgUser)
+        }
+        dialog.show()
+
+    }
 }

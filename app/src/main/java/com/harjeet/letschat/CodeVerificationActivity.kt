@@ -1,4 +1,4 @@
-package com.harjeet.chitForChat
+package com.harjeet.letschat
 
 import android.content.ContentValues
 import android.content.ContentValues.TAG
@@ -13,16 +13,18 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.harjeet.chitForChat.databinding.ActivityCodeVerificationBinding
 import com.mukesh.OnOtpCompletionListener
-import com.harjeet.chitForChat.Models.Users
+import com.harjeet.letschat.Models.Users
+import harjeet.chitForChat.databinding.ActivityCodeVerificationBinding
 import java.util.concurrent.TimeUnit
+import harjeet.chitForChat.R
+/* Sending otp and verify mobile number */
 
 class CodeVerificationActivity : AppCompatActivity() {
     var VerificationId = ""
     var auth: FirebaseAuth? = null
     var firebaseUsers =
-        FirebaseDatabase.getInstance("https://chitforchat-d1ee5-default-rtdb.asia-southeast1.firebasedatabase.app/")
+        FirebaseDatabase.getInstance(MyConstants.FIREBASE_BASE_URL)
             .getReference(MyConstants.NODE_USERS)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,83 +33,21 @@ class CodeVerificationActivity : AppCompatActivity() {
         var binding = ActivityCodeVerificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         auth = FirebaseAuth.getInstance()
-//        sentOtp(intent!!.getStringExtra(MyConstants.PHONE_NUMBER).toString());
+        sentOtp(intent!!.getStringExtra(MyConstants.PHONE_NUMBER).toString());
         binding.txtMobile.setText("+91"+intent.getStringExtra(MyConstants.PHONE_NUMBER))
 
         binding.otpView.setOtpCompletionListener(object : OnOtpCompletionListener {
             override fun onOtpCompleted(otp: String) {
                 // do Stuff
-//                verifyOtp(otp)
+                verifyOtp(otp)
 
-
-                firebaseUsers.child(intent.getStringExtra(MyConstants.PHONE_NUMBER).toString())
-                    .addListenerForSingleValueEvent(object : ValueEventListener {
-                        override fun onDataChange(snapshot: DataSnapshot) {
-
-                            if (snapshot.exists()) {
-                                startActivity(
-                                    Intent(
-                                        this@CodeVerificationActivity,
-                                        HomeActivity::class.java
-                                    ).putExtra(
-                                        MyConstants.PHONE_NUMBER,
-                                        intent.getStringExtra(MyConstants.PHONE_NUMBER)
-                                    )
-                                )
-
-                                var data: Users? = snapshot.getValue(Users::class.java)
-
-                                MyUtils.saveStringValue(
-                                    this@CodeVerificationActivity,
-                                    MyConstants.USER_NAME,
-                                    data!!.name.toString()
-                                )
-                                MyUtils.saveStringValue(
-                                    this@CodeVerificationActivity,
-                                    MyConstants.USER_IMAGE,
-                                    data!!.image.toString()
-                                )
-                                MyUtils.saveStringValue(
-                                    this@CodeVerificationActivity,
-                                    MyConstants.USER_PHONE,
-                                    data!!.phone.toString()
-                                )
-                                MyUtils.saveBooleanValue(
-                                    this@CodeVerificationActivity,
-                                    MyConstants.IS_LOGIN,
-                                    true
-                                )
-
-                                MyUtils.saveStringValue(
-                                    this@CodeVerificationActivity,
-                                    MyConstants.USER_CAPTIONS,
-                                    data!!.captions.toString()
-                                )
-
-
-                            } else {
-                                startActivity(
-                                    Intent(
-                                        this@CodeVerificationActivity,
-                                        ProfileActivity::class.java
-                                    ).putExtra(
-                                        MyConstants.PHONE_NUMBER,
-                                        intent.getStringExtra(MyConstants.PHONE_NUMBER)
-                                    )
-                                )
-
-                            }
-
-                        }
-
-                        override fun onCancelled(error: DatabaseError) {
-                            TODO("Not yet implemented")
-                        }
-
-                    })
 
             }
+
+
         })
+
+
 
 //        sentOtp(intent!!.getStringExtra(MyConstants.PhoneNumber).toString());
 
@@ -140,7 +80,6 @@ class CodeVerificationActivity : AppCompatActivity() {
 
 
     private fun sentOtp(phoneNumber: String) {
-
         MyUtils.showProgress(this@CodeVerificationActivity)
         var callbacks = object : PhoneAuthProvider.OnVerificationStateChangedCallbacks() {
 

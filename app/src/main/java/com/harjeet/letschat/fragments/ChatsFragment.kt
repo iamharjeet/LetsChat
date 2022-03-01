@@ -1,4 +1,4 @@
-package com.harjeet.chitForChat.fragments
+package com.harjeet.letschat.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -9,15 +9,15 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.harjeet.chitForChat.Models.ChatFriendsModel
-import com.harjeet.chitForChat.Models.LiveChatModel
-import com.harjeet.chitForChat.MyConstants
-import com.harjeet.chitForChat.MyUtils
-import com.harjeet.chitForChat.adapters.ChatListAdapter
-import com.harjeet.chitForChat.adapters.ChatLiveAdapter
-import com.harjeet.chitForChat.databinding.FragmentChatsBinding
+import com.harjeet.letschat.Models.ChatFriendsModel
+import com.harjeet.letschat.MyConstants
+import com.harjeet.letschat.MyUtils
+import com.harjeet.letschat.adapters.ChatListAdapter
 import android.app.Activity
+import harjeet.chitForChat.databinding.FragmentChatsBinding
 
+
+/* Showing the friends list with last message */
 class ChatsFragment : Fragment() {
     var firebaseChatFriends =
         FirebaseDatabase.getInstance(MyConstants.FIREBASE_BASE_URL)
@@ -39,6 +39,8 @@ class ChatsFragment : Fragment() {
         getChatsFromFirebase()
     }
 
+
+    //getting chats from firebase database
     private fun getChatsFromFirebase() {
         firebaseChatFriends.child(MyUtils.getStringValue(requireActivity(), MyConstants.USER_PHONE))
             .addValueEventListener(object : ValueEventListener {

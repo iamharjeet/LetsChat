@@ -1,4 +1,4 @@
-package com.harjeet.chitForChat.fragments
+package com.harjeet.letschat.fragments
 
 import android.content.Intent
 import android.os.Bundle
@@ -7,13 +7,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.database.FirebaseDatabase
-import com.harjeet.chitForChat.MyConstants
-import com.harjeet.chitForChat.MyUtils
-import com.harjeet.chitForChat.ProfileActivity
-import com.harjeet.chitForChat.R
-import com.harjeet.chitForChat.databinding.FragmentSettingsBinding
+import com.harjeet.letschat.MyConstants
+import com.harjeet.letschat.MyUtils
+import com.harjeet.letschat.ProfileActivity
+import harjeet.chitForChat.databinding.FragmentSettingsBinding
 
-
+/* Change Setting of app
+* show profile option
+* show Logout option
+* */
 class Settings : Fragment() {
     var firebaseOnlineStatus =
         FirebaseDatabase.getInstance(MyConstants.FIREBASE_BASE_URL)
@@ -49,10 +51,11 @@ class Settings : Fragment() {
                         requireContext(),
                         MyConstants.USER_PHONE
                     )
-                ).child(MyConstants.NODE_ONLINE_STATUS).setValue("Offline")
-            }
-            MyUtils.clearAllData(requireActivity())
-            requireActivity()!!.finish()
+                ).child(MyConstants.NODE_ONLINE_STATUS).setValue("Offline").addOnCompleteListener {
+                    MyUtils.clearAllData(requireActivity())
+                    requireActivity()!!.finish()
+                }}
+
         }
 
     }

@@ -1,4 +1,4 @@
-package com.harjeet.chitForChat
+package com.harjeet.letschat
 
  object MyConstants {
      val USER_CAPTIONS: String="userCaptions"
@@ -21,7 +21,7 @@ package com.harjeet.chitForChat
      var OTHER_USER_IMAGE="otherUserImage"
      var OTHER_USER_PHONE="otherUserPhone"
      var SEEN_STATUS="seenStatus"
-     var FIREBASE_BASE_URL="https://chitforchat-d1ee5-default-rtdb.asia-southeast1.firebasedatabase.app/"
+     var FIREBASE_BASE_URL="https://letschat-30e4c-default-rtdb.firebaseio.com/"
 
 
 

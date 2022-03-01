@@ -1,4 +1,4 @@
-package com.harjeet.chitForChat.fragments
+package com.harjeet.letschat.fragments
 
 import android.location.Location
 import android.os.Bundle
@@ -10,17 +10,15 @@ import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
-import com.harjeet.chitForChat.Models.ChatFriendsModel
-import com.harjeet.chitForChat.Models.Users
-import com.harjeet.chitForChat.MyConstants
-import com.harjeet.chitForChat.MyUtils
-import com.harjeet.chitForChat.adapters.ChatListAdapter
-import com.harjeet.chitForChat.adapters.NearbyChatAdapter
-import com.harjeet.chitForChat.databinding.FragmentNearbyBinding
+import com.harjeet.letschat.Models.Users
+import com.harjeet.letschat.MyConstants
+import com.harjeet.letschat.MyUtils
+import com.harjeet.letschat.adapters.NearbyChatAdapter
+import harjeet.chitForChat.databinding.FragmentNearbyBinding
 
-
+/* Showing Nearby Users list */
 class NearbyFragment : Fragment() {
-    var binding:FragmentNearbyBinding?=null
+    var binding: FragmentNearbyBinding?=null
     var myLat:String="0"
     var myLong:String="0"
     var firebaseUsers =
@@ -47,6 +45,8 @@ class NearbyFragment : Fragment() {
 
     }
 
+
+    // refreshing list of nearby users
     private fun searchNearby() {
         MyUtils.showProgress(requireActivity())
         myLat=MyUtils.getStringValue(requireActivity(),MyConstants.USER_LATITUDE)
@@ -81,6 +81,7 @@ class NearbyFragment : Fragment() {
 
         })
     }
+
 
     fun getKmFromLatLong(lat1: Float, lng1: Float, lat2: Float, lng2: Float): Float {
         val loc1 = Location("")

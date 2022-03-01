@@ -1,4 +1,4 @@
-package com.harjeet.chitForChat
+package com.harjeet.letschat
 
 import android.app.Activity
 import android.content.Intent
@@ -19,14 +19,20 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
-import com.harjeet.chitForChat.Models.Users
-import com.harjeet.chitForChat.MyConstants.NODE_USERS
-import com.harjeet.chitForChat.databinding.ActivityProfileBinding
+import com.harjeet.letschat.Models.Users
+import com.harjeet.letschat.MyConstants.NODE_USERS
+import harjeet.chitForChat.databinding.ActivityProfileBinding
 import java.io.ByteArrayOutputStream
 import java.util.*
-
+import harjeet.chitForChat.R
 
 class ProfileActivity : AppCompatActivity() {
+
+    /*
+    * Showing and update profile details
+    * Register a User.
+    */
+
     var userImage: Bitmap? = null
     var firebaseUsers =
         FirebaseDatabase.getInstance(MyConstants.FIREBASE_BASE_URL)
@@ -101,7 +107,7 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-
+//uploading image to firebase
     private fun uploadFile(bitmap: Bitmap) {
         val storage: FirebaseStorage = FirebaseStorage.getInstance()
         val storageRef: StorageReference = storage.getReference()
@@ -130,11 +136,15 @@ class ProfileActivity : AppCompatActivity() {
             })
     }
 
+
+    //upload detail on firebase
     private fun uploadData(phone: String, name: String, captions:String,imageUri: String) {
         var users: Users = Users();
         users!!.name = name
         users.phone = phone
         users.image = imageUri!!
+        users.lat=""
+        users.long=""
         if(!captions.equals("")) {
             users.captions = captions
         }else{

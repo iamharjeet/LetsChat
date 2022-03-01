@@ -1,22 +1,27 @@
-package com.harjeet.chitForChat.adapters
+package com.harjeet.letschat.adapters
 
 import android.app.Dialog
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
 import com.google.firebase.database.FirebaseDatabase
-import com.harjeet.chitForChat.Models.LiveChatModel
-import com.harjeet.chitForChat.MyConstants
-import com.harjeet.chitForChat.MyUtils
-import com.harjeet.chitForChat.R
-import de.hdodenhof.circleimageview.CircleImageView
+import com.harjeet.letschat.CodeAndDecode
+import com.harjeet.letschat.Models.LiveChatModel
+import com.harjeet.letschat.MyConstants
+import com.harjeet.letschat.MyUtils
+import harjeet.chitForChat.R
+
+
+/* Handling chats between two users */
 
 class ChatLiveAdapter(
     var context: Context,
@@ -39,18 +44,46 @@ class ChatLiveAdapter(
             )
         }
     }
+    private fun showDialog(url: String?) {
+        var dialog = Dialog(context)
+        dialog.setContentView(R.layout.dialog_image)
 
+        var imgUser = dialog.findViewById<ImageView>(R.id.imgUser)
+        var imgBack=dialog.findViewById<ImageView>(R.id.imgBack)
+
+
+        dialog.getWindow()!!.setBackgroundDrawableResource(android.R.color.black);
+        dialog.window!!.setLayout(
+            GridLayoutManager.LayoutParams.MATCH_PARENT,
+            GridLayoutManager.LayoutParams.MATCH_PARENT
+        )
+        imgBack.setOnClickListener {
+            dialog.cancel()
+        }
+
+
+            imgUser.visibility = View.VISIBLE
+            if (!url.equals("")) {
+                Glide.with(context).load(url).into(imgUser)
+            }
+
+
+        dialog.show()
+
+
+    }
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ChatLiveAdapter.viewHolder, position: Int) {
 
         if (chatsList.get(position).messageType.equals("text")) {
             holder.imgMessage.visibility = View.GONE
             holder.txtMessage.visibility = View.VISIBLE
-            holder.txtMessage.text = chatsList[position].message
+            holder.txtMessage.text =CodeAndDecode.decrypt(chatsList[position].message,roomId)
         } else if (chatsList.get(position).messageType.equals("image")) {
             holder.txtMessage.visibility = View.GONE
             holder.imgMessage.visibility = View.VISIBLE
             Glide.with(context)
-                .load(chatsList.get(position).message)
+                .load(CodeAndDecode.decrypt(chatsList[position].message,roomId))
                 .into(holder.imgMessage)
         }
 
@@ -63,7 +96,9 @@ class ChatLiveAdapter(
         }
         holder.txtTime.setText(MyUtils.convertIntoTime((chatsList.get(position).time).toString()))
 
-
+holder.imgMessage.setOnClickListener {
+    showDialog(CodeAndDecode.decrypt(chatsList[position].message,roomId))
+}
 
     }
 
@@ -93,6 +128,5 @@ class ChatLiveAdapter(
         var imgMessage = itemView.findViewById<ImageView>(R.id.imgMessage)
         var txtTime = itemView.findViewById<TextView>(R.id.txtTime)
         var txtDate = itemView.findViewById<TextView>(R.id.txtdate)
-
     }
 }

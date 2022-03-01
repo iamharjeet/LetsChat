@@ -1,4 +1,4 @@
-package com.harjeet.chitForChat.adapters
+package com.harjeet.letschat.adapters
 
 import android.content.Context
 import android.content.Intent
@@ -9,17 +9,16 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.RecyclerView.ViewHolder
 import com.bumptech.glide.Glide
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.FirebaseDatabase
-import com.google.firebase.database.ValueEventListener
-import com.harjeet.chitForChat.ChatLiveActivity
-import com.harjeet.chitForChat.Models.Users
-import com.harjeet.chitForChat.MyConstants
-import com.harjeet.chitForChat.MyUtils
-import com.harjeet.chitForChat.R
+import com.harjeet.letschat.ChatLiveActivity
+import com.harjeet.letschat.Models.Users
+import com.harjeet.letschat.MyConstants
+import com.harjeet.letschat.MyUtils
 import de.hdodenhof.circleimageview.CircleImageView
+import harjeet.chitForChat.R
 
+
+/* Handling nearby users list */
 class NearbyChatAdapter(var context: Context, var chatNearbyList: ArrayList<Users>) :
     RecyclerView.Adapter<NearbyChatAdapter.viewHolder>() {
 
@@ -47,6 +46,10 @@ class NearbyChatAdapter(var context: Context, var chatNearbyList: ArrayList<User
                     .putExtra(MyConstants.OTHER_USER_PHONE,chatNearbyList.get(position).phone)
                     .putExtra(MyConstants.OTHER_USER_IMAGE,chatNearbyList.get(position).image)
             )
+        }
+
+        holder.imgUser.setOnClickListener {
+            MyUtils.showProfileDialog(context,chatNearbyList.get(position).image.toString())
         }
 
 

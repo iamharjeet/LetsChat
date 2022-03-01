@@ -1,11 +1,11 @@
-package com.harjeet.chitForChat.adapters
+package com.harjeet.letschat.adapters
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.harjeet.chitForChat.fragments.ChatsFragment
-import com.harjeet.chitForChat.fragments.NearbyFragment
-import com.harjeet.chitForChat.fragments.Settings
+import com.harjeet.letschat.fragments.ChatsFragment
+import com.harjeet.letschat.fragments.NearbyFragment
+import com.harjeet.letschat.fragments.Settings
 
 class HomeTabApapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     override fun getCount(): Int {

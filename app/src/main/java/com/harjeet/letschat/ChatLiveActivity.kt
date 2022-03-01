@@ -1,4 +1,4 @@
-package com.harjeet.chitForChat
+package com.harjeet.letschat
 
 import android.app.Activity
 import android.content.Intent
@@ -11,6 +11,7 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.*
 import com.bumptech.glide.Glide
@@ -25,16 +26,19 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.UploadTask
-import com.harjeet.chitForChat.Models.ChatFriendsModel
-import com.harjeet.chitForChat.Models.LiveChatModel
-import com.harjeet.chitForChat.MyConstants.FIREBASE_BASE_URL
-import com.harjeet.chitForChat.adapters.ChatLiveAdapter
-import com.harjeet.chitForChat.databinding.ActivityChatLiveBinding
+import com.harjeet.letschat.Models.ChatFriendsModel
+import com.harjeet.letschat.Models.LiveChatModel
+import com.harjeet.letschat.MyConstants.FIREBASE_BASE_URL
+import com.harjeet.letschat.adapters.ChatLiveAdapter
+import harjeet.chitForChat.R
+import harjeet.chitForChat.databinding.ActivityChatLiveBinding
 import java.io.ByteArrayOutputStream
 import java.util.*
 import kotlin.collections.ArrayList
 
-
+/*
+Chatting screen Where two users can chat with each others
+ */
 class ChatLiveActivity : AppCompatActivity() {
     private var senderId: String = ""
     private var receiverId: String = ""
@@ -54,6 +58,7 @@ class ChatLiveActivity : AppCompatActivity() {
         FirebaseDatabase.getInstance(MyConstants.FIREBASE_BASE_URL)
             .getReference(MyConstants.NODE_ONLINE_STATUS)
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat_live)
@@ -62,17 +67,15 @@ class ChatLiveActivity : AppCompatActivity() {
         setContentView(binding!!.root)
         binding!!.txtName.setText(intent.getStringExtra(MyConstants.OTHER_USER_NAME))
 
-
-
-            Glide.with(this@ChatLiveActivity)
-                .load(intent.getStringExtra(MyConstants.OTHER_USER_IMAGE)).placeholder(R.drawable.user)
-                .into(binding!!.imgUser)
+        Glide.with(this@ChatLiveActivity)
+            .load(intent.getStringExtra(MyConstants.OTHER_USER_IMAGE)).placeholder(R.drawable.user)
+            .into(binding!!.imgUser)
 
 
         clicks()
         senderId = MyUtils.getStringValue(this@ChatLiveActivity, MyConstants.USER_PHONE)
         receiverId = intent.getStringExtra(MyConstants.OTHER_USER_PHONE).toString()
-
+// Getting online status of other user
         getOnlineStatus(receiverId)
         if (senderId < receiverId) {
             roomId = senderId + receiverId
@@ -87,7 +90,7 @@ class ChatLiveActivity : AppCompatActivity() {
             }
         }
 
-
+// Handling typing status
         binding!!.edtMessage.addTextChangedListener(object : TextWatcher {
             var isTyping = false
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
@@ -157,11 +160,11 @@ class ChatLiveActivity : AppCompatActivity() {
                 .start()
 
         }
-        getChatsFromFirebase();
+        getChatsFromFirebase()
     }
 
 
-
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
@@ -189,14 +192,18 @@ class ChatLiveActivity : AppCompatActivity() {
         }
     }
 
+
+
+    // sending message to the firebase database and to other user
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun sendMessageOnFirebase(message: String?, messageType: String) {
-        var message = message
-        var key = firebaseChats.push().key
-        var data: LiveChatModel =
+        val message = message
+        val key = firebaseChats.push().key
+        val data: LiveChatModel =
             LiveChatModel(
                 senderId,
                 receiverId,
-                message.toString(),
+                CodeAndDecode.encrypt(message.toString(), roomId.toString())!!,
                 messageType,
                 key.toString(),
                 Calendar.getInstance().time.time.toString(),
@@ -209,7 +216,7 @@ class ChatLiveActivity : AppCompatActivity() {
                         receiverId,
                         intent.getStringExtra(MyConstants.OTHER_USER_NAME).toString(),
                         intent.getStringExtra(MyConstants.OTHER_USER_IMAGE).toString(),
-                        message.toString(),
+                        CodeAndDecode.encrypt(message.toString(), roomId.toString())!!,
                     )
                 )
                 firebaseChatFriends.child(receiverId).child(senderId).setValue(
@@ -220,7 +227,7 @@ class ChatLiveActivity : AppCompatActivity() {
                             MyConstants.USER_NAME
                         ),
                         intent.getStringExtra(MyConstants.OTHER_USER_IMAGE).toString(),
-                        message.toString(),
+                        CodeAndDecode.encrypt(message.toString(), roomId.toString())!!
                     )
                 )
                 binding!!.edtMessage.setText("")
@@ -228,7 +235,8 @@ class ChatLiveActivity : AppCompatActivity() {
 
     }
 
-
+// Uploading image to firebase and send to other user
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun uploadImageOnFirebase(bitmap: Bitmap) {
         val storage: FirebaseStorage = FirebaseStorage.getInstance()
         val storageRef: StorageReference = storage.getReference()
@@ -255,6 +263,7 @@ class ChatLiveActivity : AppCompatActivity() {
         binding!!.imgBack.setOnClickListener { finish() }
     }
 
+    // getting online status of other user
     private fun getOnlineStatus(receiverId: String) {
         firebaseOnlineStatus.child(receiverId).child(MyConstants.NODE_ONLINE_STATUS)
             .addValueEventListener(object : ValueEventListener {
@@ -274,6 +283,7 @@ class ChatLiveActivity : AppCompatActivity() {
 
     }
 
+    // getting recent or live  chat from firebase and set on screen
     private fun getChatsFromFirebase() {
         firebaseChats.child(roomId!!).addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -300,5 +310,28 @@ class ChatLiveActivity : AppCompatActivity() {
 
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!MyUtils.getStringValue(this@ChatLiveActivity, MyConstants.USER_PHONE).equals(""))
+            firebaseOnlineStatus.child(
+                MyUtils.getStringValue(
+                    this@ChatLiveActivity,
+                    MyConstants.USER_PHONE
+                )
+            ).child(MyConstants.NODE_ONLINE_STATUS).setValue("Online")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        if (!MyUtils.getStringValue(this@ChatLiveActivity, MyConstants.USER_PHONE).equals(""))
+            firebaseOnlineStatus.child(
+                MyUtils.getStringValue(
+                    this@ChatLiveActivity,
+                    MyConstants.USER_PHONE
+                )
+            ).child(MyConstants.NODE_ONLINE_STATUS).setValue(MyUtils.convertIntoTime(Calendar.getInstance().timeInMillis.toString()))
+
     }
 }

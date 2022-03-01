@@ -1,4 +1,4 @@
-package com.harjeet.chitForChat.Models
+package com.harjeet.letschat.Models
 
 class LiveChatModel {
     constructor(){
