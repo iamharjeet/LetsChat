@@ -15,14 +15,17 @@
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/imgSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logo"
-        android:id="@+id/imgSearch"
-        android:backgroundTint="@color/app_color"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
-        android:layout_margin="10dp"
-        />
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        app:elevation="1dp"
+        android:backgroundTint="@android:color/darker_gray"
+        android:src="@drawable/logo" />
 
 </RelativeLayout>

@@ -6,6 +6,7 @@ package com.harjeet.letschat
      var PHONE_NUMBER="phoneNumber"
      var NODE_USERS="Users"
      var NODE_CHATS="Chats"
+     var COUNTRY_CODE="CountryCode"
      var NODE_CHAT_FIRENDS="ChatFriends"
      var NODE_ONLINE_STATUS="onlineStatus"
      var NODE_NAME="Name"

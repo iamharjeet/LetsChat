@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.google.firebase.database.FirebaseDatabase
+import com.harjeet.letschat.LoginActivity
 import com.harjeet.letschat.MyConstants
 import com.harjeet.letschat.MyUtils
 import com.harjeet.letschat.ProfileActivity
@@ -53,7 +54,9 @@ class Settings : Fragment() {
                     )
                 ).child(MyConstants.NODE_ONLINE_STATUS).setValue("Offline").addOnCompleteListener {
                     MyUtils.clearAllData(requireActivity())
-                    requireActivity()!!.finish()
+                    requireActivity()!!.finishAffinity()
+                    MyUtils.chatNearbyList.clear()
+                    startActivity(Intent(requireContext(),LoginActivity::class.java))
                 }}
 
         }

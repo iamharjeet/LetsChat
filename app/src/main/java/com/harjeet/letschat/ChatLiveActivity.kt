@@ -84,7 +84,7 @@ class ChatLiveActivity : AppCompatActivity() {
         }
         binding!!.imgSend.setOnClickListener {
             if (binding!!.edtMessage.text.toString().equals("")) {
-                MyUtils.showToast(this@ChatLiveActivity, "Please Enter Message")
+                MyUtils.showToast(this@ChatLiveActivity, "Can't Send Empty Message")
             } else {
                 sendMessageOnFirebase(binding!!.edtMessage.text.toString(), "text")
             }
@@ -197,7 +197,8 @@ class ChatLiveActivity : AppCompatActivity() {
     // sending message to the firebase database and to other user
     @RequiresApi(Build.VERSION_CODES.O)
     private fun sendMessageOnFirebase(message: String?, messageType: String) {
-        val message = message
+        var message = message
+
         val key = firebaseChats.push().key
         val data: LiveChatModel =
             LiveChatModel(
@@ -211,12 +212,17 @@ class ChatLiveActivity : AppCompatActivity() {
         firebaseChats.child(roomId!!).child(key.toString()).setValue(data)
             .addOnCompleteListener {
                 MyUtils.stopProgress(this@ChatLiveActivity)
+
+                if(messageType.equals("image")){
+                    message="Image"
+                }
                 firebaseChatFriends.child(senderId).child(receiverId).setValue(
                     ChatFriendsModel(
                         receiverId,
                         intent.getStringExtra(MyConstants.OTHER_USER_NAME).toString(),
                         intent.getStringExtra(MyConstants.OTHER_USER_IMAGE).toString(),
                         CodeAndDecode.encrypt(message.toString(), roomId.toString())!!,
+                        Calendar.getInstance().time.time.toString()
                     )
                 )
                 firebaseChatFriends.child(receiverId).child(senderId).setValue(
@@ -227,7 +233,8 @@ class ChatLiveActivity : AppCompatActivity() {
                             MyConstants.USER_NAME
                         ),
                         intent.getStringExtra(MyConstants.OTHER_USER_IMAGE).toString(),
-                        CodeAndDecode.encrypt(message.toString(), roomId.toString())!!
+                        CodeAndDecode.encrypt(message.toString(), roomId.toString())!!,
+                                Calendar.getInstance().time.time.toString()
                     )
                 )
                 binding!!.edtMessage.setText("")

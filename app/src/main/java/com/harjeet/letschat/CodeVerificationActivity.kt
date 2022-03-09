@@ -33,14 +33,14 @@ class CodeVerificationActivity : AppCompatActivity() {
         var binding = ActivityCodeVerificationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         auth = FirebaseAuth.getInstance()
-        sentOtp(intent!!.getStringExtra(MyConstants.PHONE_NUMBER).toString());
-        binding.txtMobile.setText("+91"+intent.getStringExtra(MyConstants.PHONE_NUMBER))
+//        sentOtp(intent!!.getStringExtra(MyConstants.PHONE_NUMBER).toString());
+        binding.txtMobile.setText(intent.getStringExtra(MyConstants.COUNTRY_CODE)+intent.getStringExtra(MyConstants.PHONE_NUMBER))
 
         binding.otpView.setOtpCompletionListener(object : OnOtpCompletionListener {
             override fun onOtpCompleted(otp: String) {
                 // do Stuff
-                verifyOtp(otp)
-
+//                verifyOtp(otp)
+                checkAlreadyRegister()
 
             }
 
@@ -97,7 +97,7 @@ class CodeVerificationActivity : AppCompatActivity() {
             override fun onVerificationFailed(e: FirebaseException) {
                 // This callback is invoked in an invalid request for verification is made,
                 // for instance if the the phone number format is not valid.
-                Log.w(ContentValues.TAG, "onVerificationFailed", e)
+//                Log.w(ContentValues.TAG, "onVerificationFailed", e)
                 MyUtils.stopProgress(this@CodeVerificationActivity)
                 MyUtils.showToast(this@CodeVerificationActivity, e.toString())
                 if (e is FirebaseAuthInvalidCredentialsException) {
@@ -118,7 +118,7 @@ class CodeVerificationActivity : AppCompatActivity() {
                 // now need to ask the user to enter the code and then construct a credential
                 // by combining the code with a verification ID.
                 Log.d(ContentValues.TAG, "onCodeSent:$verificationId")
-                MyUtils.showToast(this@CodeVerificationActivity, "Code Successfully Sent")
+                MyUtils.showToast(this@CodeVerificationActivity, "OTP Sent Successfully")
                 // Save verification ID and resending token so we can use them later
                 VerificationId = verificationId
 
@@ -126,7 +126,7 @@ class CodeVerificationActivity : AppCompatActivity() {
         }
 
         val options = PhoneAuthOptions.newBuilder(auth!!)
-            .setPhoneNumber("+91" + phoneNumber)       // Phone number to verify
+            .setPhoneNumber(intent.getStringExtra(MyConstants.COUNTRY_CODE) + phoneNumber)       // Phone number to verify
             .setTimeout(60L, TimeUnit.SECONDS) // Timeout and unit
             .setActivity(this)                 // Activity (for callback binding)
             .setCallbacks(callbacks)          // OnVerificationStateChangedCallbacks

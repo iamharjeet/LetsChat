@@ -92,11 +92,11 @@
         <EditText
             android:id="@+id/edtMessage"
             android:layout_width="match_parent"
-            android:layout_toRightOf="@+id/imgCamera"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginRight="10dp"
             android:layout_toLeftOf="@id/imgSend"
+            android:layout_toRightOf="@+id/imgCamera"
             android:background="@drawable/bg_edt_message"
             android:hint="message..."
             android:padding="10dp" />

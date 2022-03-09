@@ -14,18 +14,18 @@ class HomeTabApapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
     }
 
     override fun getItem(position: Int): Fragment {
-        if (position == 0) return ChatsFragment();
-        if (position == 1) return NearbyFragment();
+        if (position == 0) return NearbyFragment();
+        if (position == 1) return ChatsFragment()
         if (position == 2) return Settings();
-        else return ChatsFragment()
+        else return NearbyFragment()
     }
 
     override fun getPageTitle(position: Int): CharSequence? {
 
-        if (position == 0) return "Chats";
-        if (position == 1) return "Nearby"
+        if (position == 0) return "Nearby";
+        if (position == 1) return "Chat"
         if (position == 2) return "Settings"
-        else return "Chats"
+        else return "Nearby"
         return super.getPageTitle(position)
 
     }

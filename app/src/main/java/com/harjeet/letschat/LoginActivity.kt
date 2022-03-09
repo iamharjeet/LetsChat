@@ -17,7 +17,10 @@ class LoginActivity : AppCompatActivity() {
         binding.btnNext.setOnClickListener {
 
             if(!binding.edtPhoneNumber.text.equals("")){
-            startActivity(Intent(this@LoginActivity,CodeVerificationActivity::class.java).putExtra(MyConstants.PHONE_NUMBER,binding.edtPhoneNumber.text.toString()))
+            startActivity(Intent(this@LoginActivity,CodeVerificationActivity::class.java)
+                .putExtra(MyConstants.PHONE_NUMBER,binding.edtPhoneNumber.text.toString())
+                .putExtra(MyConstants.COUNTRY_CODE,"+${binding.ccp.selectedCountryCode.toString()}")
+            )
         }else{
             MyUtils.showToast(this,"Please enter your mobile number")
         }

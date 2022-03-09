@@ -44,34 +44,7 @@ class ChatLiveAdapter(
             )
         }
     }
-    private fun showDialog(url: String?) {
-        var dialog = Dialog(context)
-        dialog.setContentView(R.layout.dialog_image)
 
-        var imgUser = dialog.findViewById<ImageView>(R.id.imgUser)
-        var imgBack=dialog.findViewById<ImageView>(R.id.imgBack)
-
-
-        dialog.getWindow()!!.setBackgroundDrawableResource(android.R.color.black);
-        dialog.window!!.setLayout(
-            GridLayoutManager.LayoutParams.MATCH_PARENT,
-            GridLayoutManager.LayoutParams.MATCH_PARENT
-        )
-        imgBack.setOnClickListener {
-            dialog.cancel()
-        }
-
-
-            imgUser.visibility = View.VISIBLE
-            if (!url.equals("")) {
-                Glide.with(context).load(url).into(imgUser)
-            }
-
-
-        dialog.show()
-
-
-    }
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onBindViewHolder(holder: ChatLiveAdapter.viewHolder, position: Int) {
 
@@ -88,7 +61,6 @@ class ChatLiveAdapter(
         }
 
         if (!MyConstants.DATE.equals(MyUtils.convertIntoDate(chatsList.get(position).time.toString()))) {
-
             holder.txtDate.setText(MyUtils.convertIntoDate(chatsList.get(position).time.toString()))
             MyConstants.DATE = MyUtils.convertIntoDate(chatsList.get(position).time.toString())
         } else {
@@ -97,7 +69,7 @@ class ChatLiveAdapter(
         holder.txtTime.setText(MyUtils.convertIntoTime((chatsList.get(position).time).toString()))
 
 holder.imgMessage.setOnClickListener {
-    showDialog(CodeAndDecode.decrypt(chatsList[position].message,roomId))
+    MyUtils.showDialog(context,CodeAndDecode.decrypt(chatsList[position].message,roomId))
 }
 
     }

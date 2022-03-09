@@ -45,16 +45,16 @@ class ChatsFragment : Fragment() {
         firebaseChatFriends.child(MyUtils.getStringValue(requireActivity(), MyConstants.USER_PHONE))
             .addValueEventListener(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-
                     if (snapshot.exists()) {
                         chatFriendList.clear()
+
                         for (postSnapshot in snapshot.children) {
                             val user: ChatFriendsModel? =
                                 postSnapshot.getValue(ChatFriendsModel::class.java)
                             chatFriendList.add(user!!)
                             // here you can access to name property like university.name
                         }
-
+                        chatFriendList.sortByDescending { chatFriendsModel -> chatFriendsModel.time }
                         val activity: Activity? = activity
                         if (activity != null) {
                             binding!!.recyclerChatList.adapter =

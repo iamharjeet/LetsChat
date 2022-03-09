@@ -9,13 +9,20 @@ class ChatFriendsModel {
         name: String,
         image:String,
         origonalMessage:String,
-
+        time:String
     ) {
         this.name = name
         this.userId = userId
         this.image = image
+        this.time=time
         this.origonalMessage=origonalMessage
     }
+
+    var time: String? = null
+        get() = field
+        set(value) {
+            field = value
+        }
     var origonalMessage: String? = null
         get() = field
         set(value) {

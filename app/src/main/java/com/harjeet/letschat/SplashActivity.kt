@@ -17,8 +17,10 @@ class SplashActivity : AppCompatActivity() {
         super.onResume()
         Handler().postDelayed({
             if (MyUtils.getBooleanValue(this@SplashActivity, MyConstants.IS_LOGIN)) {
+                finish()
                 startActivity(Intent(this@SplashActivity, HomeActivity::class.java))
             } else {
+                finish()
                 startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
             }
         }, 3000)

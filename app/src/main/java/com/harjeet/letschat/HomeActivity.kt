@@ -2,11 +2,16 @@ package com.harjeet.letschat
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Typeface
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
+import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.*
+import com.google.android.material.tabs.TabLayout
 import com.google.firebase.database.FirebaseDatabase
 import com.harjeet.letschat.Models.Users
 import com.harjeet.letschat.adapters.HomeTabApapter
@@ -40,94 +45,11 @@ class HomeActivity : AppCompatActivity() {
         fusedLocationProviderClient =
             LocationServices.getFusedLocationProviderClient(this@HomeActivity)
 
-        when {
-            MyUtils.isAccessFineLocationGranted(this) -> {
-                when {
-                    MyUtils.isLocationEnabled(this) -> {
-                        setUpLocationListener()
-                    }
-                    else -> {
-                        MyUtils.showGPSNotEnabledDialog(this)
-                    }
-                }
-            }
-            else -> {
-                MyUtils.requestAccessFineLocationPermission(
-                    this,
-                    LOCATION_PERMISSION_REQUEST_CODE
-                )
-            }
-        }
+
     }
 
 
     //getting current location of user
-    private fun setUpLocationListener() {
-        // for getting the current location update after every 2 seconds with high accuracy
-        locationRequest = LocationRequest().setInterval(10000).setFastestInterval(10000)
-            .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_COARSE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            return
-        }
-
-        locationCallback = object : LocationCallback() {
-            override fun onLocationResult(locationResult: LocationResult) {
-                super.onLocationResult(locationResult)
-                var lat = ""
-                var longi = ""
-                for (location in locationResult.locations) {
-                    lat = location.latitude.toString()
-                    longi = location.longitude.toString()
-                }
-
-
-                var users: Users = Users();
-                users.name = MyUtils.getStringValue(this@HomeActivity, MyConstants.USER_NAME)
-                users.phone = MyUtils.getStringValue(this@HomeActivity, MyConstants.USER_PHONE)
-                users.image = MyUtils.getStringValue(this@HomeActivity, MyConstants.USER_IMAGE)
-                users.captions = MyUtils.getStringValue(this@HomeActivity, MyConstants.USER_CAPTIONS)
-                users.lat = lat!!
-                users.long = longi!!
-                if (users.phone!=null && !users.phone.equals("")) {
-                    firebaseUsers.child(users.phone.toString()).setValue(users)
-                }
-                MyUtils.saveStringValue(
-                    this@HomeActivity,
-                    MyConstants.USER_LATITUDE,
-                    users.lat.toString()
-                )
-                MyUtils.saveStringValue(
-                    this@HomeActivity,
-                    MyConstants.USER_LONGITUDE,
-                    users.long.toString()
-                )
-
-                // Few more things we can do here:
-                // For example: Update the location of user on server
-            }
-        }
-        fusedLocationProviderClient!!.requestLocationUpdates(
-            locationRequest,
-            locationCallback,
-            Looper.getMainLooper()
-        )
-
-    }
 
     override fun onResume() {
         super.onResume()
@@ -142,7 +64,7 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        fusedLocationProviderClient!!.removeLocationUpdates(locationCallback)
+
     }
 
     override fun onPause() {
@@ -156,4 +78,6 @@ class HomeActivity : AppCompatActivity() {
             ).child(MyConstants.NODE_ONLINE_STATUS).setValue(MyUtils.convertIntoTime(Calendar.getInstance().timeInMillis.toString()))
 
     }
+
+
 }

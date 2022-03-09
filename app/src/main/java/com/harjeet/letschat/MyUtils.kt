@@ -1,6 +1,7 @@
 package com.harjeet.letschat
 
 import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.app.Dialog
 import android.content.Context
@@ -10,12 +11,15 @@ import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.LocationManager
 import android.provider.Settings
+import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
+import com.harjeet.letschat.Models.Users
 import de.hdodenhof.circleimageview.CircleImageView
 import harjeet.chitForChat.R
 import java.text.SimpleDateFormat
@@ -26,10 +30,10 @@ import java.util.*
 */
 object MyUtils {
     var dialog: Dialog? = null;
-
+    var chatNearbyList: ArrayList<Users> = ArrayList()
     // showing a message toast
     fun showToast(context: Context, message: String) {
-        Toast.makeText(context, message, Toast.LENGTH_LONG).show()
+        Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
     }
 
 
@@ -95,7 +99,7 @@ object MyUtils {
 
 
     // request for permissions
-    fun requestAccessFineLocationPermission(activity: AppCompatActivity, requestId: Int) {
+    fun requestAccessFineLocationPermission(activity: Activity, requestId: Int) {
         ActivityCompat.requestPermissions(
             activity,
             arrayOf(
@@ -150,7 +154,7 @@ object MyUtils {
     fun convertIntoTime(timeStamp: String): String {
         var Timestamp: Long = timeStamp.toLong()
         var timeD: Date = Date(Timestamp)
-        var sdf: SimpleDateFormat = SimpleDateFormat("HH:mm a")
+        var sdf: SimpleDateFormat = SimpleDateFormat("hh:mm a")
         return sdf.format(timeD)
     }
 
@@ -178,6 +182,35 @@ object MyUtils {
             Glide.with(context).load(imageUrl).placeholder(R.drawable.user).into(imgUser)
         }
         dialog.show()
+
+    }
+
+     fun showDialog(context: Context,url: String?) {
+        var dialog = Dialog(context)
+        dialog.setContentView(R.layout.dialog_image)
+
+        var imgUser = dialog.findViewById<ImageView>(R.id.imgUser)
+        var imgBack=dialog.findViewById<ImageView>(R.id.imgBack)
+
+
+        dialog.getWindow()!!.setBackgroundDrawableResource(android.R.color.black);
+        dialog.window!!.setLayout(
+            GridLayoutManager.LayoutParams.MATCH_PARENT,
+            GridLayoutManager.LayoutParams.MATCH_PARENT
+        )
+        imgBack.setOnClickListener {
+            dialog.cancel()
+        }
+
+
+        imgUser.visibility = View.VISIBLE
+        if (!url.equals("")) {
+            Glide.with(context).load(url).into(imgUser)
+        }
+
+
+        dialog.show()
+
 
     }
 }

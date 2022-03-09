@@ -1,6 +1,8 @@
 package com.harjeet.letschat
 
 import android.app.Activity
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
@@ -8,8 +10,11 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.View
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.GridLayoutManager
 import com.bumptech.glide.Glide
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.gms.tasks.OnFailureListener
@@ -25,15 +30,11 @@ import harjeet.chitForChat.databinding.ActivityProfileBinding
 import java.io.ByteArrayOutputStream
 import java.util.*
 import harjeet.chitForChat.R
+import java.io.File
 
 class ProfileActivity : AppCompatActivity() {
-
-    /*
-    * Showing and update profile details
-    * Register a User.
-    */
-
     var userImage: Bitmap? = null
+    var imgUri:Uri?=null
     var firebaseUsers =
         FirebaseDatabase.getInstance(MyConstants.FIREBASE_BASE_URL)
             .getReference(NODE_USERS)
@@ -55,7 +56,8 @@ class ProfileActivity : AppCompatActivity() {
                 .into(binding.imgUser)
         }
 
-        binding.imgUser.setOnClickListener {
+
+        binding.imgEdit.setOnClickListener {
             ImagePicker.with(this)
                 .crop()                    //Crop image(Optional), Check Customization for more option
                 .compress(1024)            //Final image size will be less than 1 MB(Optional)
@@ -64,6 +66,10 @@ class ProfileActivity : AppCompatActivity() {
                     1080
                 )    //Final image resolution will be less than 1080 x 1080(Optional)
                 .start()
+        }
+
+        binding.imgUser.setOnClickListener {
+          showDialog(this,MyUtils.getStringValue(this@ProfileActivity, MyConstants.USER_IMAGE))
         }
 
         binding.btnSave.setOnClickListener {
@@ -82,24 +88,55 @@ class ProfileActivity : AppCompatActivity() {
 
 
     }
+    fun showDialog(context: Context, url: String?) {
+        var dialog = Dialog(context)
+        dialog.setContentView(R.layout.dialog_image)
 
+        var imgUser = dialog.findViewById<ImageView>(R.id.imgUser)
+        var imgBack=dialog.findViewById<ImageView>(R.id.imgBack)
+
+
+        dialog.getWindow()!!.setBackgroundDrawableResource(android.R.color.black);
+        dialog.window!!.setLayout(
+            GridLayoutManager.LayoutParams.MATCH_PARENT,
+            GridLayoutManager.LayoutParams.MATCH_PARENT
+        )
+        imgBack.setOnClickListener {
+            dialog.cancel()
+        }
+
+
+
+        imgUser.visibility = View.VISIBLE
+
+            Glide.with(context).load(url).placeholder(R.drawable.user).into(imgUser)
+
+        if(imgUri!=null){
+            Glide.with(context).load(File(imgUri!!.path)).into(imgUser)
+        }
+
+
+        dialog.show()
+
+
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (resultCode == Activity.RESULT_OK) {
             //Image Uri will not be null for RESULT_OK
-            val uri: Uri = data?.data!!
+            imgUri = data?.data!!
             // Use Uri object instead of File to avoid storage permissions
-            binding.imgUser.setImageURI(uri)
+            binding.imgUser.setImageURI(imgUri)
 
             userImage = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 ImageDecoder.decodeBitmap(
                     ImageDecoder.createSource(
                         this@ProfileActivity.contentResolver,
-                        uri
+                        imgUri!!
                     )
                 )
             } else {
-                MediaStore.Images.Media.getBitmap(this@ProfileActivity.contentResolver, uri)
+                MediaStore.Images.Media.getBitmap(this@ProfileActivity.contentResolver, imgUri)
             }
 
         } else if (resultCode == ImagePicker.RESULT_ERROR) {
@@ -178,7 +215,7 @@ class ProfileActivity : AppCompatActivity() {
 
             if(MyUtils.getBooleanValue(this@ProfileActivity,MyConstants.IS_LOGIN,)) {
                 userImage=null
-                MyUtils.showToast(this@ProfileActivity,"Successfully Update")
+                MyUtils.showToast(this@ProfileActivity,"Updated Successfully")
             }else{
                 userImage=null
                 startActivity(Intent(this, HomeActivity::class.java))
