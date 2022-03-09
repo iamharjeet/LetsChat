@@ -9,7 +9,7 @@ message other strangers on board to keep his luggage secure.
 * Find and make friends with other tourists in a park, beach, or other travel destination.
 
 # Directions to Use
-* Go to the link - 
+* Go to the link - http://www.iamharjeet.com/LetsChat.apk
 * Download the apk
 * Install the app on two different phones within 500m range
 * Enjoy
